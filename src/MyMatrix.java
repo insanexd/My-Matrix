@@ -6,21 +6,25 @@ public class MyMatrix<T> implements Matrix<T>{
 
     //Sub-Class
     private class DepthFirstIterator implements Iterator<T>{
-        private int cursor;
+        private boolean endReached = false;
+        List<T> myList = new ArrayList<>();
+
         public DepthFirstIterator(){}
         @Override
         public boolean hasNext() {
-            //return (currentX < super.getColumnCount() && currentY < this.getRowCount());
-            return false;
+            if(matrixEntries.isEmpty()) return false;
+            return true;
         }
+
         @Override
         public T next() throws NoSuchElementException {
-
-            if(this.hasNext()) {
-                int current= cursor;
-                cursor++;
-                return (T)matrixEntries.values().toArray()[current];
+            for(int i = 0; i < getColumnCount(); i++){
+                for(int j = 0; j < getRowCount(); j++) {
+                    T t = matrixEntries.remove(new Point(j, i));
+                    if(t != null) return t;
+                }
             }
+
             throw new NoSuchElementException();
         }
 
@@ -28,9 +32,6 @@ public class MyMatrix<T> implements Matrix<T>{
 
     //Upper-Class
     private Map<Point, T> matrixEntries = new HashMap();
-    private int currentX;
-    private int currentY;
-
 
     @Override
     public int getRowCount() {
@@ -96,7 +97,7 @@ public class MyMatrix<T> implements Matrix<T>{
 
     //Iterator
     public Iterator<T> iterator() {
-        return this.matrixEntries.values().iterator();
+        return new DepthFirstIterator();
     }
 
 }
